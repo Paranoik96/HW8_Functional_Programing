@@ -1,9 +1,11 @@
 package com.cursor.functionals.users;
 
+import java.util.Objects;
+
 public class User {
-    private final String name;
-    private final int age;
-    private final String city;
+    private String name;
+    private int age;
+    private String city;
 
     public User(String name, int age, String city) {
         this.name = name;
@@ -23,6 +25,18 @@ public class User {
         return city;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -30,5 +44,20 @@ public class User {
                 ", age=" + age +
                 ", city='" + city + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return age == user.age &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(city, user.city);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age, city);
     }
 }

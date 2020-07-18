@@ -8,11 +8,11 @@ import java.util.stream.Collectors;
 public class UserExecute {
 
     public static void start() {
-        averageAgeLvivUsers();
-        notFromKyivUsers();
-        sortByAge();
-        elderThan();
-        youngerThanFromDnipro();
+        averageAgeOfUsers(initializeUsers(), "Львів");
+        notFromExactCityOfUsers(initializeUsers(), "Киев");
+        sortByAge(initializeUsers(),3);
+        elderThan(initializeUsers());
+        youngerThan(initializeUsers(), "Днепр");
     }
 
     static class MyScanner {
@@ -39,17 +39,15 @@ public class UserExecute {
         return userMap;
     }
 
-    private static void elderThan() {
+    private static void elderThan(Map<Integer, User> mainMap) {
         System.out.println("Enter the Number to show users by age from : ");
-        Map<Integer, User> oldUsers;
-        oldUsers = initializeUsers();
         while (!MyScanner.getInstance().hasNextInt()) {
             System.out.println("That's not a number!");
             MyScanner.getInstance().next();
             System.out.println("Enter the Number to show users by age from : ");
         }
         int lineNum = MyScanner.getInstance().nextInt();
-        oldUsers
+        mainMap
                 .entrySet()
                 .stream()
                 .filter(u -> u.getValue().getAge() > lineNum)
@@ -58,64 +56,50 @@ public class UserExecute {
         System.out.println();
     }
 
-    private static void youngerThanFromDnipro() {
-        System.out.println("Enter the Number to Show Users by Age from Dnipro to : ");
-        Map<Integer, User> youngUsers;
-        youngUsers = initializeUsers();
+    private static void youngerThan(Map<Integer, User> mainMap, String cityName) {
+        System.out.println("Enter the Number to Show Users by Age from " + cityName + " to : ");
         while (!MyScanner.getInstance().hasNextInt()) {
             System.out.println("That's not a number!");
             MyScanner.getInstance().next();
-            System.out.println("Enter the Number to Show Users by Age from Dnipro to : ");
+            System.out.println("Enter the Number to Show Users by Age from " + cityName + " to : ");
         }
         int lineNum = MyScanner.getInstance().nextInt();
-        youngUsers
+        mainMap
                 .entrySet()
                 .stream()
-                .filter(u -> u.getValue().getAge() < lineNum && u.getValue().getCity().equals("Днепр"))
+                .filter(u -> u.getValue().getAge() < lineNum && u.getValue().getCity().equals(cityName))
                 .collect(Collectors.toList())
                 .forEach(System.out::println);
         System.out.println();
     }
 
-    private static void averageAgeLvivUsers() {
-        System.out.println("average Age of Lviv Users is : ");
-        Map<Integer, User> lvivUsers;
-        lvivUsers = initializeUsers();
-        lvivUsers
+    private static void averageAgeOfUsers(Map<Integer, User> mainMap, String cityName) {
+        System.out.println("average Age of " + cityName +" Users is : ");
+        mainMap
                 .values()
                 .stream()
-                .filter(user -> user.getCity().equals("Львів"))
+                .filter(user -> user.getCity().equals(cityName))
                 .mapToDouble(User::getAge)
                 .average()
                 .ifPresent(System.out::println);
         System.out.println();
     }
 
-    private static void notFromKyivUsers() {
-        Map<Integer, User> users;
-        users = initializeUsers();
-        long amount = users
+    private static void notFromExactCityOfUsers(Map<Integer, User> mainMap, String cityName) {
+        long amount = mainMap
                 .entrySet()
                 .stream()
-                .filter(u -> !u.getValue().getCity().equals("Киев"))
+                .filter(u -> !u.getValue().getCity().equals(cityName))
                 .count();
-        System.out.println("Users are not from Kyiv : " + amount);
-        users.values()
-                .stream()
-                .filter(user -> !user.getCity().equals("Киев"))
-                .collect(Collectors.toList())
-                .forEach(System.out::println);
-        System.out.println();
+        System.out.println("Users are not from " + cityName + " : " + amount + "\n");
     }
 
-    private static void sortByAge() {
+    private static void sortByAge(Map<Integer, User> mainMap, int limitNumber) {
         System.out.println("Sorted by age of first three users :");
-        Map<Integer, User> users;
-        users = initializeUsers();
-        users.entrySet()
+        mainMap.entrySet()
                 .stream()
                 .sorted(Comparator.comparing(user -> user.getValue().getAge()))
-                .limit(3)
+                .limit(limitNumber)
                 .forEach(System.out::println);
         System.out.println();
     }
